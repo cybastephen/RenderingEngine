@@ -1,3 +1,10 @@
 [submodule "vendor/GLFW"]
 	path = vendor/GLFW
 	url = https://github.com/cybastephen/glfw.git
+[submodule "vendor/ImGui"]
+	path = vendor/ImGui
+	url = https://github.com/cybastephen/imgui.git
+	branch = docking
+[submodule "vendor/spdlog"]
+	path = vendor/spdlog
+	url = https://github.com/cybastephen/spdlog.git
