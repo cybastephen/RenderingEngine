@@ -10,8 +10,12 @@ workspace "RenderingEngine"
 
     IncludeDir = {}
     IncludeDir["GLFW"] = "vendor/GLFW/include"
+    IncludeDir["Glad"] = "vendor/Glad/include"
+    IncludeDir["ImGui"] = "vendor/ImGui"
 
     include "vendor/GLFW"
+    include "vendor/GLad"
+    include "vendor/ImGui"
 
 project "RenderingEngine"
     kind "ConsoleApp"
@@ -22,19 +26,25 @@ project "RenderingEngine"
 
     files
     {
-        "%{src/**.h}",
-        "%{src/**.cpp}"
+        "src/**.h",
+        "src/**.cpp"
     }
 
-    includekdirs
+    includedirs
     {
-        "%src",
-        "%{includeDir.GLFW}"
+        "src/",
+        "%{IncludeDir.GLFW}",
+        "%{IncludeDir.Glad}",
+        "%{IncludeDir.ImGui}",
+        "vendor/spdlog/include"
     }
 
     links
     {
-        "GLFW"
+        "GLFW",
+        "Glad",
+        "ImGui",
+        "opengl32.lib"
     }
 
     filter "system:windows"
