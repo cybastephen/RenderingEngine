@@ -9,16 +9,17 @@ workspace "RenderingEngine"
     outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
     IncludeDir = {}
-    IncludeDir["GLFW"] = "vendor/GLFW/include"
-    IncludeDir["Glad"] = "vendor/Glad/include"
-    IncludeDir["ImGui"] = "vendor/ImGui"
+    IncludeDir["GLFW"] = "RenderingEngine/vendor/GLFW/include"
+    IncludeDir["Glad"] = "RenderingEngine/vendor/Glad/include"
+    IncludeDir["ImGui"] = "RenderingEngine/vendor/ImGui"
 
-    include "vendor/GLFW"
-    include "vendor/GLad"
-    include "vendor/ImGui"
+    include "RenderingEngine/vendor/GLFW"
+    include "RenderingEngine/vendor/Glad"
+    include "RenderingEngine/vendor/ImGui"
 
 project "RenderingEngine"
-    kind "ConsoleApp"
+    location "RenderingEngine"
+    kind "StaticLib"
     language "C++"
 
     targetdir ("bin/" .. outputdir .. "%{prj.name}")
@@ -26,17 +27,17 @@ project "RenderingEngine"
 
     files
     {
-        "src/**.h",
-        "src/**.cpp"
+        "%{prj.name}/src/**.h",
+        "%{prj.name}/src/**.cpp"
     }
 
     includedirs
     {
-        "src/",
+        "%{prj.name}/src",
         "%{IncludeDir.GLFW}",
         "%{IncludeDir.Glad}",
         "%{IncludeDir.ImGui}",
-        "vendor/spdlog/include"
+        "%{prj.name}/vendor/spdlog/include"
     }
 
     links
@@ -45,6 +46,11 @@ project "RenderingEngine"
         "Glad",
         "ImGui",
         "opengl32.lib"
+    }
+
+    postbuildcommands
+    {
+        ("{COPY} %{cfg.buildtarget.relpath} ../Sandbox")
     }
 
     filter "system:windows"
@@ -56,3 +62,36 @@ project "RenderingEngine"
     filter "configurations:Release"
     optimize "On"
 
+project "Sandbox"
+    location "Sandbox"
+    kind "ConsoleApp"
+    language "C++"
+
+    targetdir ("bin/" .. outputdir .. "%{prj.name}")
+    objdir ("bin-int/" .. outputdir .. "%{prj.name}")
+
+    files
+    {
+        "%{prj.name}/src/**.h",
+        "%{prj.name}/src/**.cpp"
+    }
+
+    includedirs
+    {
+        "RenderingEngine/vendor/spdlog/include",
+        "RenderingEngine/src"
+    }
+
+    links
+    {
+        "RenderingEngine"
+    }
+
+    filter "system:windows"
+    cppdialect "C++17"
+    systemversion "latest"
+
+filter "configurations:Debug"
+
+filter "configurations:Release"
+optimize "On"
